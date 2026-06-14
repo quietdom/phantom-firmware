@@ -1,103 +1,50 @@
 # Phantom
 
-Advanced ESP32-S3 offensive security platform built for the Lilygo T-Embed CC1101. Sub-GHz, WiFi, BLE, IR, RFID, GPS. Designed for hardware-level penetration testing.
+ESP32-S3 offensive security platform for T-Embed CC1101.
+
+Built from scratch for hardware-level penetration testing. Sub-GHz, WiFi, BLE, IR, RFID, GPS.
 
 ![Watch Dogs Theme](./src/themes/watchdogs/boot.gif)
 
-## Features
-
-### WiFi
-- WiFi Scanner & Connect
-- WiFi AP Mode
-- Beacon Spam
-- Deauth Flood
-- Target Attack (Deauth + Evil Portal)
-- Evil Portal (Captive Portal)
-- RAW Sniffer
-- ARP Spoofing & Poisoning
-- Responder
-- TCP Client & Listener
-- SSH & TelNet
-- Scan Hosts with Port Scanning
-- WireGuard Tunneling
-- Karma Attack
-- Credential Forwarding
-
-### BLE
-- BLE Scanner
-- BLE Spam (iOS, Windows, Samsung, Android)
-- Bad BLE (Ducky Scripts)
-- AirTag Spoofer
-- Notification Spoofer
-- BLE Name Spammer
-- BLE Audio Rickroll
-
-### Sub-GHz (CC1101)
-- Scan & Copy
-- Custom Sub-GHz (Replay)
-- RF Spectrum
-- RF Jammer (Full & Intermittent)
-- RF Bruteforce
-
-### RFID
-- PN532 Read/Write/Clone
-- 125kHz Read
-- NDEF Write
-- Chameleon Ultra
-- Amiibolink
-- EMV Reader
-
-### IR
-- TV-B-Gone
-- IR Receiver
-- Custom IR (NEC, Samsung, RC5, RC6, Sony, etc.)
-
-### NRF24
-- NRF24 Jammer
-- 2.4G Spectrum
-
-### GPS
-- GPS Tracker
-- Wardriving
-- Wigle Upload
-
-### Others
-- JavaScript Interpreter
-- Mic Spectrum
-- QR Code Generator
-- SD Card Manager
-- LittleFS Manager
-- WebUI
-- iButton
-- LED Control
-
 ## Installation
 
-### Web Flasher
-Coming soon.
+**Web Flasher** - Coming soon
 
-### Manual Flash
-```bash
+**Manual:**
+```
 esptool.py --chip esp32s3 --port /dev/ttyACM0 write_flash 0x0 firmware.bin
 ```
 
-### Build from Source
-```bash
+**Build:**
+```
 git clone https://github.com/quietdom/phantom-firmware.git
 cd phantom-firmware
 platformio run -e lilygo-t-embed-cc1101
 ```
 
+## Modules
+
+| Module | Tools |
+|--------|-------|
+| **WiFi** | Scanner, AP, Beacon Spam, Deauth, Evil Portal, Sniffer, ARP Spoof, Responder, SSH, WireGuard, Karma |
+| **BLE** | Scanner, Spam (iOS/Windows/Samsung), Bad BLE, AirTag Spoof, Name Spammer |
+| **Sub-GHz** | Scan/Copy, Replay, Spectrum, Jammer, Bruteforce |
+| **RFID** | PN532, 125kHz, NDEF, Chameleon, Amiibolink, EMV |
+| **IR** | TV-B-Gone, Receiver, Custom (NEC/Samsung/RC5/RC6/Sony) |
+| **NRF24** | Jammer, 2.4G Spectrum |
+| **GPS** | Tracker, Wardriving, Wigle |
+| **Other** | JS Interpreter, Mic, QR Codes, SD Manager, WebUI, iButton |
+
 ## Hardware
 
-**Supported Device:** Lilygo T-Embed CC1101
+**Board:** Lilygo T-Embed CC1101
 
-| Feature | Status |
-|---------|--------|
+| Peripheral | Support |
+|------------|---------|
 | CC1101 Sub-GHz | Yes |
 | NRF24 | Yes |
 | FM Radio | Yes |
-| PN532 | Yes |
+| PN532 NFC | Yes |
 | Microphone | Yes |
 | BadUSB | Yes |
 | RGB LED | Yes |
@@ -106,4 +53,4 @@ platformio run -e lilygo-t-embed-cc1101
 
 ## License
 
-MIT License - Use at your own risk. For authorized security testing only.
+MIT. Authorized security testing only.
