@@ -8,6 +8,7 @@
 #include <ESPAsyncWebServer.h>
 #include <SD.h>
 #include <WiFi.h>
+#include "esp_task_wdt.h"
 #include <esp_wifi.h>
 #include <globals.h>
 
