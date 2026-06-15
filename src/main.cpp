@@ -21,6 +21,14 @@
 #include "modules/NRF24/nrf_jammer.h"
 #include "modules/NRF24/nrf_spectrum.h"
 #include "modules/ble/ble_common.h"
+
+extern void nrf_mousejack();
+extern void nrf_jammer();
+extern void nrf_spectrum();
+extern void nrf_info();
+extern void ble_scan();
+extern void arsenal_dashboard_start();
+
 #include <functional>
 #include <string>
 #include <vector>
@@ -54,7 +62,7 @@ void phantomMenuLaunchSubmenu(int index) {
                 {"Selective Deauth",  [](){ arsenal_selective_deauth(); }},
                 {"WPA Handshake",     [](){ arsenal_wpa_handshake_grabber(); }},
                 {"DHCP Starvation",   [](){ arsenal_dhcp_starvation(); }},
-                {"WiFi Scan",         [](){ arsenal_network_scanner_v2(); }},
+                {"WiFi Scan",         [](){ arsenal_network_scanner(); }},
                 {"Default Creds",     [](){ arsenal_default_cred_scanner(); }},
                 {"DNS Tunnel",        [](){ arsenal_dns_tunnel(); }},
                 {"Rogue AP Detect",   [](){ arsenal_rogue_ap_detector(); }},
@@ -75,7 +83,7 @@ void phantomMenuLaunchSubmenu(int index) {
                 {"BLE Tracker",    [](){ arsenal_ble_tracker(); }},
                 {"BT Audio Jam",   [](){ arsenal_bt_audio_jammer(); }},
                 {"BT Rickroll",    [](){ arsenal_bt_audio_rickroll(); }},
-                {"Device Profiler", [](){ arsenal_device_profiler(); }},
+                {"Device Profiler", [](){ arsenal_bt_device_profiler(); }},
                 {"BLE Suite",      [](){ ble_scan(); }},
             };
             PhantomMenu::submenu("BLE", items);
@@ -100,6 +108,7 @@ void phantomMenuLaunchSubmenu(int index) {
             break;
         }
         case 3: { // NRF24
+            extern void nrf_mousejack();
             std::vector<PhantomMenuItem> items = {
                 {"Info",        [](){ nrf_info(); }},
                 {"MouseJack",   [](){ nrf_mousejack(); }},
@@ -131,7 +140,7 @@ void phantomMenuLaunchSubmenu(int index) {
                 {"Attack Stats",     [](){ arsenal_attack_stats(); }},
                 {"Password Gen",     [](){ arsenal_password_generator(); }},
                 {"Jam All",          [](){ arsenal_jam_all(); }},
-                {"Dashboard",        [](){ arsenal_dashboard_start(); }},
+                {"Dashboard",        [](){ extern void arsenal_dashboard_start(); arsenal_dashboard_start(); }},
             };
             PhantomMenu::submenu("EXTRAS", items);
             break;
