@@ -25,7 +25,7 @@ private:
     void drawMenuList();
     void drawMenuItem(int idx, bool selected, int y);
     void idleLoop();
-    void clearAllInputs();
+    static void clearAllInputs();
 
     std::vector<PhantomMenuItem> _items;
     int _sel = 0;
