@@ -46,7 +46,6 @@ String startupAppJSInterpreterFile = "";
 MainMenu mainMenu;
 PhantomMenu phantomMenu;
 
-// Callback for PhantomMenu to call Bruce submenus
 std::function<void(int)> phantomMenuCallback = nullptr;
 
 void phantomMenuLaunchSubmenu(int index) {
@@ -158,7 +157,6 @@ SPIClass CC_NRF_SPI(VSPI);
 SPIClass CC_NRF_SPI(HSPI);
 #endif
 
-// Navigation Variables
 volatile bool NextPress = false;
 volatile bool PrevPress = false;
 volatile bool UpPress = false;
@@ -186,10 +184,6 @@ void __attribute__((weak)) taskInputHandler(void *parameter) {
     auto timer = millis();
     while (true) {
         checkPowerSaveTime();
-        // Sometimes this task run 2 or more times before looptask,
-        // and navigation gets stuck, the idea here is run the input detection
-        // if AnyKeyPress is false, or rerun if it was not renewed within 75ms (arbitrary)
-        // because AnyKeyPress will be true if didn´t passed through a check(bool var)
         if (!AnyKeyPress || millis() - timer > 75) {
             NextPress = false;
             PrevPress = false;
@@ -211,7 +205,6 @@ void __attribute__((weak)) taskInputHandler(void *parameter) {
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
-// Public Globals Variables
 unsigned long previousMillis = millis();
 int prog_handler; // 0 - Flash, 1 - LittleFS, 3 - Download
 String cachedPassword = "";
@@ -219,8 +212,6 @@ int8_t interpreter_state = -1;
 bool sdcardMounted = false;
 bool gpsConnected = false;
 
-// wifi globals
-// TODO put in a namespace
 bool wifiConnected = false;
 bool isWebUIActive = false;
 String wifiIP;
@@ -248,7 +239,6 @@ bool clock_set = false;
 #endif
 
 std::vector<Option> options;
-// Protected global variables
 #if defined(HAS_SCREEN)
 tft_logger tft = tft_logger(); // Invoke custom library
 tft_sprite sprite = tft_sprite(&tft);
@@ -281,7 +271,6 @@ volatile int tftHeight = VECTOR_DISPLAY_DEFAULT_WIDTH;
 #include "modules/rf/rf_utils.h"                 // for initCC1101once
 #include <Wire.h>
 
-/*********************************************************************
  **  Function: begin_storage
  **  Config LittleFS and SD storage
  *********************************************************************/
@@ -292,30 +281,25 @@ void begin_storage() {
     bruceConfigPins.fromFile(checkFS);
 }
 
-/*********************************************************************
  **  Function: _setup_gpio()
  **  Sets up a weak (empty) function to be replaced by /ports/* /interface.h
  *********************************************************************/
 void _setup_gpio() __attribute__((weak));
 void _setup_gpio() {}
 
-/*********************************************************************
  **  Function: _post_setup_gpio()
  **  Sets up a weak (empty) function to be replaced by /ports/* /interface.h
  *********************************************************************/
 void _post_setup_gpio() __attribute__((weak));
 void _post_setup_gpio() {}
 
-/*********************************************************************
  **  Function: setup_gpio
  **  Setup GPIO pins
  *********************************************************************/
 void setup_gpio() {
 
-    // init setup from /ports/*/interface.h
     _setup_gpio();
 
-    // Smoochiee v2 uses a AW9325 tro control GPS, MIC, Vibro and CC1101 RX/TX powerlines
     ioExpander.init(IO_EXPANDER_ADDRESS, &Wire);
 
 #if TFT_MOSI > 0
@@ -325,13 +309,9 @@ void setup_gpio() {
 #endif
         if (bruceConfigPins.CC1101_bus.mosi == bruceConfigPins.SDCARD_bus.mosi)
         initCC1101once(&sdcardSPI); // (ARDUINO_M5STACK_CARDPUTER) and (ESP32S3DEVKITC1) and devices that
-                                    // share CC1101 pin with only SDCard
     else initCC1101once(NULL);
-    // (ARDUINO_M5STICK_C_PLUS) || (ARDUINO_M5STICK_C_PLUS2) and others that doesn´t share SPI with
-    // other devices (need to change it when Bruce board comes to shore)
 }
 
-/*********************************************************************
  **  Function: begin_tft
  **  Config tft
  *********************************************************************/
@@ -349,7 +329,6 @@ void begin_tft() {
     setBrightness(bruceConfig.bright, false);
 }
 
-/*********************************************************************
  **  Function: boot_screen
  **  Draw boot screen
  *********************************************************************/
@@ -362,7 +341,6 @@ void boot_screen() {
     tft.drawCentreString("v1.0", tftWidth / 2, tftHeight / 2 + 6, FP);
 }
 
-/*********************************************************************
  **  Function: boot_screen_anim
  **  Draw Watch Dogs animated boot screen
  *********************************************************************/
@@ -370,7 +348,6 @@ void boot_screen_anim() {
     PhantomMenu::bootSequence();
 }
 
-/*********************************************************************
  **  Function: init_clock
  **  Clock initialisation for propper display in menu
  *********************************************************************/
@@ -409,7 +386,6 @@ void init_clock() {
 #endif
 }
 
-/*********************************************************************
  **  Function: init_led
  **  Led initialisation
  *********************************************************************/
@@ -419,7 +395,6 @@ void init_led() {
 #endif
 }
 
-/*********************************************************************
  **  Function: startup_sound
  **  Play sound or tone depending on device hardware
  *********************************************************************/
@@ -427,13 +402,11 @@ void startup_sound() {
     if (bruceConfig.soundEnabled == 0) return; // if sound is disabled, do not play sound
 #if !defined(LITE_VERSION)
 #if defined(BUZZ_PIN)
-    // Bip M5 just because it can. Does not bip if splashscreen is bypassed
     _tone(5000, 50);
     delay(200);
     _tone(5000, 50);
     /*  2fix: menu infinite loop */
 #elif defined(HAS_NS4168_SPKR)
-    // play a boot sound
     if (bruceConfig.theme.boot_sound) {
         playAudioFile(bruceConfig.themeFS(), bruceConfig.getThemeItemImg(bruceConfig.theme.paths.boot_sound));
     } else if (SD.exists("/boot.wav")) {
@@ -445,7 +418,6 @@ void startup_sound() {
 #endif
 }
 
-/*********************************************************************
  **  Function: setup
  **  Where the devices are started and variables set
  *********************************************************************/
@@ -463,7 +435,6 @@ void setup() {
     log_d("Total PSRAM: %d", ESP.getPsramSize());
     log_d("Free PSRAM: %d", ESP.getFreePsram());
 
-    // declare variables
     prog_handler = 0;
     sdcardMounted = false;
     wifiConnected = false;
@@ -475,7 +446,6 @@ void setup() {
     tft.init();
     tft.setRotation(bruceConfigPins.rotation);
     tft.fillScreen(TFT_BLACK);
-    // bruceConfig is not read yet.. just to show something on screen due to long boot time
     tft.setTextColor(TFT_PURPLE, TFT_BLACK);
     tft.drawCentreString("Booting", tft.width() / 2, tft.height() / 2, 1);
 #else
@@ -488,7 +458,6 @@ void setup() {
 
     options.reserve(20); // preallocate some options space to avoid fragmentation
 
-    // Set WiFi country to avoid warnings and ensure max power
     const wifi_country_t country = {
         .cc = "US",
         .schan = 1,
@@ -502,15 +471,9 @@ void setup() {
     esp_wifi_set_max_tx_power(80); // 80 translates to 20dBm
     esp_wifi_set_country(&country);
 
-    // Some GPIO Settings (such as CYD's brightness control must be set after tft and sdcard)
     _post_setup_gpio();
-    // Some board interfaces initialize or reset the backlight in post-setup,
-    // so re-apply the stored brightness after that stage completes.
     setBrightness(bruceConfig.bright, false);
-    // end of post gpio begin
 
-    // #ifndef USE_TFT_eSPI_TOUCH
-    // This task keeps running all the time, will never stop
     xTaskCreate(
         taskInputHandler,              // Task function
         "InputHandler",                // Task Name
@@ -519,15 +482,12 @@ void setup() {
         2,                             // Task priority (0 to 3), loopTask has priority 2.
         &xHandle                       // Task handle (not used)
     );
-    // #endif
 #if defined(HAS_SCREEN)
     bruceConfig.openThemeFile(bruceConfig.themeFS(), bruceConfig.themePath, false);
     if (!bruceConfig.instantBoot) {
-        // Custom Phantom boot sequence
         PhantomMenu::bootSequence();
         startup_sound();
     }
-    // Wire up Phantom menu callback
     phantomMenuCallback = phantomMenuLaunchSubmenu;
     if (bruceConfig.wifiAtStartup) {
         log_i("Loading Wifi at Startup");
@@ -541,7 +501,6 @@ void setup() {
         );
     }
 #endif
-    //  start a task to handle serial commands while the webui is running
     startSerialCommandsHandlerTask(true);
 
     wakeUpScreen();
@@ -550,7 +509,6 @@ void setup() {
     }
 }
 
-/**********************************************************************
  **  Function: loop
  **  Main loop
  **********************************************************************/

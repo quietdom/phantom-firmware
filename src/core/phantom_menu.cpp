@@ -4,14 +4,11 @@
 #include "core/utils.h"
 #include <globals.h>
 
-// === MINIMALIST PALETTE ===
-static const uint16_t C_BG   = 0x0000; // black
+static const uint16_t C_BG   = 0x0000;
 static const uint16_t C_WHITE = 0xFFFF;
-static const uint16_t C_LGRAY = 0xC618; // light gray for unselected
-static const uint16_t C_DGRAY = 0x4208; // dark gray for subtle elements
-static const uint16_t C_HIGHL = 0xFFFF; // selection highlight (white)
+static const uint16_t C_LGRAY = 0xC618;
+static const uint16_t C_DGRAY = 0x4208;
 
-// === LAYOUT (320x170 landscape) ===
 static const int STATUS_H  = 16;
 static const int ROW_H     = 24;
 static const int PAD_X     = 8;
@@ -20,11 +17,10 @@ static const int SCROLL_W  = 3;
 
 extern int getBattery();
 
-// ============================================================
-//  CLEAR ALL INPUT FLAGS
-// ============================================================
+PhantomMenu::PhantomMenu() {}
+PhantomMenu::~PhantomMenu() {}
+
 void PhantomMenu::clearAllInputs() {
-    // Consume any leftover flags so they don't trigger in the next loop
     while (AnyKeyPress || SelPress || UpPress || DownPress ||
            NextPress || PrevPress || EscPress) {
         AnyKeyPress = false;
@@ -38,15 +34,11 @@ void PhantomMenu::clearAllInputs() {
     }
 }
 
-// ============================================================
-//  BOOT SEQUENCE - minimal, fits 320x170
-// ============================================================
 void PhantomMenu::bootSequence() {
     int w = tftWidth;
     int h = tftHeight;
     tft.fillScreen(C_BG);
 
-    // Simple scanline wipe
     for (int y = 0; y < h; y += 3) {
         tft.drawFastHLine(0, y, w, C_DGRAY);
         if (y > 6) tft.drawFastHLine(0, y - 6, w, C_BG);
@@ -54,13 +46,12 @@ void PhantomMenu::bootSequence() {
     }
     tft.fillScreen(C_BG);
 
-    // "PHANTOM" fade in letter by letter
     tft.setTextDatum(MC_DATUM);
     tft.setTextSize(FM);
 
     const char *title = "PHANTOM";
     int titleLen = strlen(title);
-    int charW = 12 * titleLen; // approx width at FM
+    int charW = 12 * titleLen;
     int startX = (w - charW) / 2;
     int cy = h / 2 - 10;
 
@@ -71,7 +62,6 @@ void PhantomMenu::bootSequence() {
         delay(80);
     }
 
-    // Underline
     int lineW = titleLen * 12 + 4;
     int lineX = (w - lineW) / 2;
     for (int x = 0; x < lineW; x += 2) {
@@ -79,14 +69,12 @@ void PhantomMenu::bootSequence() {
         delay(5);
     }
 
-    // Version
     tft.setTextSize(FP);
     tft.setTextColor(C_LGRAY, C_BG);
     tft.drawString("v1.0", w / 2, cy + 20, FP);
 
-    delay(600);
+        delay(600);
 
-    // Quick fade out
     for (int b = 255; b >= 0; b -= 20) {
         tft.drawRect(lineX - 2, cy - 20, lineW + 4, 50, tft.color565(b, b, b));
         delay(5);
@@ -94,22 +82,17 @@ void PhantomMenu::bootSequence() {
     tft.fillScreen(C_BG);
 }
 
-// ============================================================
-//  STATUS BAR
-// ============================================================
 void PhantomMenu::drawStatusBar() {
     int w = tftWidth;
 
     tft.fillRect(0, 0, w, STATUS_H, C_BG);
     tft.drawFastHLine(0, STATUS_H - 1, w, C_DGRAY);
 
-    // Left: PHANTOM
     tft.setTextDatum(TL_DATUM);
     tft.setTextColor(C_WHITE, C_BG);
     tft.setTextSize(FP);
     tft.drawString("PHANTOM", PAD_X, 3, FP);
 
-    // Right: battery
     int bat = getBattery();
     char batBuf[8];
     snprintf(batBuf, sizeof(batBuf), "%d%%", bat);
@@ -118,7 +101,6 @@ void PhantomMenu::drawStatusBar() {
     tft.setTextColor(C_LGRAY, C_BG);
     tft.drawString(batBuf, w - PAD_X, 3, FP);
 
-    // Battery bar
     int bx = w - PAD_X - 30;
     int by = 4;
     int bw = 14;
@@ -129,9 +111,6 @@ void PhantomMenu::drawStatusBar() {
     tft.fillRect(bx + 1, by + 1, fill, bh - 2, C_WHITE);
 }
 
-// ============================================================
-//  MENU LIST
-// ============================================================
 void PhantomMenu::drawMenuList() {
     int w = tftWidth;
     int h = tftHeight;
@@ -151,7 +130,6 @@ void PhantomMenu::drawMenuList() {
         drawMenuItem(idx, sel, y);
     }
 
-    // Thin scroll indicator
     if ((int)_items.size() > visibleRows) {
         int sbH = max(8, listH * visibleRows / (int)_items.size());
         int sbY = listY + (listH - sbH) * _sel / max(1, (int)_items.size() - 1);
@@ -165,21 +143,16 @@ void PhantomMenu::drawMenuItem(int idx, bool sel, int y) {
     int itemW = w - PAD_X * 2 - SCROLL_W - 2;
     int x = PAD_X;
 
-    // Selection: white left bar + white text
     if (sel) {
         tft.fillRect(x, y + 2, 3, ROW_H - 4, C_WHITE);
     }
 
-    // Label
     tft.setTextDatum(TL_DATUM);
     tft.setTextColor(sel ? C_WHITE : C_LGRAY, C_BG);
     tft.setTextSize(FP);
     tft.drawString(_items[idx].label, x + 8, y + 7, FP);
 }
 
-// ============================================================
-//  MAIN MENU LOOP
-// ============================================================
 void PhantomMenu::begin() {
     _sel = 0;
     _scroll = 0;
@@ -207,7 +180,6 @@ void PhantomMenu::begin() {
     while (true) {
         bool handled = false;
 
-        // UP: raw check first, then consume with check()
         if (PrevPress || check(UpPress)) {
             check(PrevPress);
             _sel = (_sel - 1 + _items.size()) % _items.size();
@@ -216,7 +188,6 @@ void PhantomMenu::begin() {
             handled = true;
         }
 
-        // DOWN
         if (!handled && (NextPress || check(DownPress))) {
             check(NextPress);
             _sel = (_sel + 1) % _items.size();
@@ -225,7 +196,6 @@ void PhantomMenu::begin() {
             handled = true;
         }
 
-        // SELECT
         if (!handled && (SelPress || check(SelPress))) {
             check(SelPress);
             _lastActivity = millis();
@@ -246,14 +216,12 @@ void PhantomMenu::begin() {
             handled = true;
         }
 
-        // ESC: single press exits back to main
         if (!handled && (EscPress || check(EscPress))) {
             check(EscPress);
             clearAllInputs();
             break;
         }
 
-        // Idle
         if (_idleEnabled && !handled && (millis() - _lastActivity > 30000)) {
             idleLoop();
             _lastActivity = millis();
@@ -266,9 +234,6 @@ void PhantomMenu::begin() {
     }
 }
 
-// ============================================================
-//  IDLE SCREEN - loops continuously until user input
-// ============================================================
 void PhantomMenu::idleLoop() {
     tft.fillScreen(C_BG);
     int w = tftWidth;
@@ -277,20 +242,16 @@ void PhantomMenu::idleLoop() {
     int mode = 0;
     int modeCount = 3;
 
-    // Matrix rain state
     int dropX[20], dropY[20];
     bool dropsInit = false;
 
-    // Hex scroll state
     int hexOff = 0;
 
-    // Breathing line state
     int breathPhase = 0;
 
     unsigned long lastSwitch = millis();
 
     while (true) {
-        // Check for ANY user input to exit
         if (AnyKeyPress || SelPress || EscPress) {
             break;
         }
@@ -298,7 +259,7 @@ void PhantomMenu::idleLoop() {
         if (digitalRead(BK_BTN) == BTN_ACT) break;
 
         switch (mode) {
-            case 0: { // Matrix rain - white digits, gray trails
+            case 0: {
                 if (!dropsInit) {
                     for (int i = 0; i < 20; i++) {
                         dropX[i] = (i * 16) % w;
@@ -307,17 +268,14 @@ void PhantomMenu::idleLoop() {
                     dropsInit = true;
                 }
                 for (int i = 0; i < 20; i++) {
-                    // clear tail
                     tft.setTextColor(C_BG, C_BG);
                     tft.drawString(" ", dropX[i], dropY[i] - 10, FP);
                     dropY[i] += 8;
-                    // head
                     if (dropY[i] >= 0 && dropY[i] < h) {
                         char buf[2] = { (char)('0' + random(0, 10)), 0 };
                         tft.setTextColor(C_WHITE, C_BG);
                         tft.drawString(buf, dropX[i], dropY[i], FP);
                     }
-                    // trail
                     int ty = dropY[i] - 8;
                     if (ty >= 0 && ty < h) {
                         char buf[2] = { (char)('0' + random(0, 10)), 0 };
@@ -329,7 +287,7 @@ void PhantomMenu::idleLoop() {
                 delay(50);
                 break;
             }
-            case 1: { // Breathing horizontal lines
+            case 1: {
                 breathPhase = (breathPhase + 2) % 360;
                 float intensity = (sin(breathPhase * 0.01745) + 1.0) / 2.0;
                 uint16_t c = tft.color565(
@@ -344,7 +302,6 @@ void PhantomMenu::idleLoop() {
                     int lx = (w - lw) / 2;
                     tft.drawFastHLine(lx, ly, lw, c);
                 }
-                // Center "PHANTOM"
                 tft.setTextDatum(MC_DATUM);
                 tft.setTextSize(FM);
                 tft.setTextColor(c, C_BG);
@@ -352,7 +309,7 @@ void PhantomMenu::idleLoop() {
                 delay(30);
                 break;
             }
-            case 2: { // Scrolling hex data
+            case 2: {
                 tft.setTextSize(FP);
                 tft.setTextDatum(TL_DATUM);
                 tft.fillScreen(C_BG);
@@ -360,8 +317,8 @@ void PhantomMenu::idleLoop() {
                     int y = 8 + r * 24;
                     if (y > h - 20) break;
                     char line[48];
-                    snprintf(line, sizeof(line), "%08X  %04X  %08X",
-                             random(0, 0xFFFFFFFF), random(0, 0xFFFF), random(0, 0xFFFFFFFF));
+                    snprintf(line, sizeof(line), "%08lX  %04X  %08lX",
+                             (unsigned long)random(0, 0xFFFFFFFF), (unsigned int)random(0, 0xFFFF), (unsigned long)random(0, 0xFFFFFFFF));
                     tft.setTextColor(r % 2 == 0 ? C_WHITE : C_DGRAY, C_BG);
                     tft.drawString(line, 4, y, FP);
                 }
@@ -371,20 +328,14 @@ void PhantomMenu::idleLoop() {
             }
         }
 
-        // Cycle mode every 10 seconds
         if (millis() - lastSwitch > 10000) {
             mode = (mode + 1) % modeCount;
             lastSwitch = millis();
             dropsInit = false;
             tft.fillScreen(C_BG);
-        }
     }
-    tft.fillScreen(C_BG);
 }
 
-// ============================================================
-//  SUBMENU
-// ============================================================
 void PhantomMenu::submenu(const char *title, std::vector<PhantomMenuItem> &items) {
     int sel = 0;
     int scroll = 0;
@@ -394,7 +345,6 @@ void PhantomMenu::submenu(const char *title, std::vector<PhantomMenuItem> &items
     int listH = h - listY;
     int visibleRows = listH / ROW_H;
 
-    // Clear any leftover input
     clearAllInputs();
 
     auto draw = [&]() {
