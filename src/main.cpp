@@ -1,4 +1,5 @@
 #include "core/main_menu.h"
+#include "core/phantom_menu.h"
 #include <globals.h>
 
 #include "core/powerSave.h"
@@ -25,6 +26,28 @@ StartupApp startupApp;
 String startupAppJSInterpreterFile = "";
 
 MainMenu mainMenu;
+PhantomMenu phantomMenu;
+
+// Callback for PhantomMenu to call Bruce submenus
+std::function<void(int)> phantomMenuCallback = nullptr;
+
+void phantomMenuLaunchSubmenu(int index) {
+    switch (index) {
+        case 0: mainMenu.wifiMenu.optionsMenu(); break;
+        case 1: mainMenu.bleMenu.optionsMenu(); break;
+        case 2: mainMenu.rfMenu.optionsMenu(); break;
+        case 3: mainMenu.nrf24Menu.optionsMenu(); break;
+        case 4: mainMenu.irMenu.optionsMenu(); break;
+        case 5: mainMenu.rfidMenu.optionsMenu(); break;
+        case 6: mainMenu.fileMenu.optionsMenu(); break;
+#if !defined(LITE_VERSION) && !defined(DISABLE_INTERPRETER)
+        case 7: mainMenu.scriptsMenu.optionsMenu(); break;
+#endif
+        case 8: mainMenu.clockMenu.optionsMenu(); break;
+        case 9: mainMenu.othersMenu.optionsMenu(); break;
+        case 10: mainMenu.configMenu.optionsMenu(); break;
+    }
+}
 SPIClass sdcardSPI;
 #ifdef USE_HSPI_PORT
 #ifndef VSPI
@@ -236,7 +259,7 @@ void boot_screen() {
     tft.drawPixel(0, 0, bruceConfig.bgColor);
     tft.drawCentreString("PHANTOM", tftWidth / 2, 10, 1);
     tft.setTextSize(FP);
-    tft.drawCentreString(PHANTOM_VERSION, tftWidth / 2, 25, 1);
+    tft.drawCentreString("v1.0", tftWidth / 2, 25, 1);
     tft.setTextSize(FM);
     tft.drawCentreString(
         "DEDSEC NETWORK", tftWidth / 2, tftHeight + 2, 1
@@ -438,9 +461,12 @@ void setup() {
 #if defined(HAS_SCREEN)
     bruceConfig.openThemeFile(bruceConfig.themeFS(), bruceConfig.themePath, false);
     if (!bruceConfig.instantBoot) {
-        boot_screen_anim();
+        // Custom Phantom boot sequence
+        PhantomMenu::bootSequence();
         startup_sound();
     }
+    // Wire up Phantom menu callback
+    phantomMenuCallback = phantomMenuLaunchSubmenu;
     if (bruceConfig.wifiAtStartup) {
         log_i("Loading Wifi at Startup");
         xTaskCreate(
@@ -480,12 +506,13 @@ void loop() {
             Serial.println("Exiting interpreter...");
         }
         if (interpreter_state == -1) { interpreterTaskHandler = NULL; }
-        previousMillis = millis(); // ensure that will not dim screen when get back to menu
+        previousMillis = millis();
     }
 #endif
     tft.fillScreen(bruceConfig.bgColor);
 
-    mainMenu.begin();
+    // Custom Phantom menu with idle screen
+    phantomMenu.begin();
     delay(1);
 }
 #else

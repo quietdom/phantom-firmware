@@ -44,7 +44,7 @@ static void wifi_jam_cycle(void) {
 
     for (int i = 0; i < 5; i++) {
         deauth_frame[24] = random(256);
-        esp_wifi_80211_tx(WIFI_IF_STA, deauth_frame, sizeof(deauth_frame), false);
+        esp_wifi_80211_tx(WIFI_IF_AP, deauth_frame, sizeof(deauth_frame), false);
     }
 
     channel = (channel % 14) + 1;
@@ -123,7 +123,7 @@ void jamall_stop_band(JamAllState &state, JamBand band) {
 void jamall_start_all(JamAllState &state) {
 
     if (state.bands[JAM_WIFI_24].enabled && state.bands[JAM_WIFI_24].available) {
-        WiFi.mode(WIFI_STA);
+        WiFi.mode(WIFI_AP);
         esp_wifi_set_promiscuous(true);
         state.bands[JAM_WIFI_24].active = true;
     }

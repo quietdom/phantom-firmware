@@ -34,7 +34,6 @@ void RFMenu::optionsMenu() {
 
         {"--- ARSENAL ---", [this]() {}},
 #if !LITE_VERSION
-        {"NRF24 MouseJack",    arsenal_nrf24_mousejack          },
         {"Doorbell Replay",    arsenal_doorbell_replay          },
         {"Garage Brute Force", arsenal_garage_brute_force       },
         {"Keyfob Logger",      arsenal_car_keyfob_logger        },

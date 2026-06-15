@@ -10,9 +10,6 @@ MainMenu::MainMenu() {
         &rfMenu,
         &nrf24Menu,
         &irMenu,
-#if !defined(LITE_VERSION)
-        &ethernetMenu,
-#endif
         &rfidMenu,
         &fileMenu,
 #if !defined(LITE_VERSION) && !defined(DISABLE_INTERPRETER)
