@@ -271,7 +271,7 @@ void boot_screen_anim() {
                 drawImg(LittleFS, "/boot.gif", 0, 0, true, 3600);
             } else {
                 // Default Watch Dogs animated boot
-                WatchdogsBoot::run(tft, tftWidth, tftHeight);
+                WatchdogsBoot::run();
             }
             drawn = true;
         }
