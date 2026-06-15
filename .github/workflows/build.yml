@@ -60,6 +60,17 @@ jobs:
           echo "Building environment: lilygo-t-embed-cc1101"
           platformio run -e "lilygo-t-embed-cc1101" | tee "build-lilygo-t-embed-cc1101.log"
 
+      - name: Merge bins into single flashable .bin
+        run: |
+          esptool.py --chip esp32s3 merge_bin --flash_mode dio --flash_size 16MB \
+            --flash_freq 80m \
+            -o phantom-merged.bin \
+            0x0 .pio/build/lilygo-t-embed-cc1101/bootloader.bin \
+            0x8000 .pio/build/lilygo-t-embed-cc1101/partitions.bin \
+            0x10000 .pio/build/lilygo-t-embed-cc1101/firmware.bin
+          echo "Merged bin size:"
+          ls -la phantom-merged.bin
+
       - name: Build summary
         run: |
           if [[ -f "build-lilygo-t-embed-cc1101.log" ]]; then
@@ -74,6 +85,7 @@ jobs:
         with:
           name: Phantom-T-Embed-CC1101
           path: |
+            phantom-merged.bin
             .pio/build/lilygo-t-embed-cc1101/firmware.bin
             .pio/build/lilygo-t-embed-cc1101/bootloader.bin
             .pio/build/lilygo-t-embed-cc1101/partitions.bin
@@ -86,4 +98,6 @@ jobs:
           echo "Environment: lilygo-t-embed-cc1101"
           echo "Git Hash: $(git describe --always --dirty)"
           echo "Built files:"
-          ls -la .pio/build/lilygo-t-embed-cc1101/*.bin 2>/dev/null || echo "No binary files found"
+          ls -la phantom-merged.bin .pio/build/lilygo-t-embed-cc1101/*.bin 2>/dev/null || echo "No binary files found"
+          echo ""
+          echo "Flash phantom-merged.bin at address 0x0 using any ESP32 flasher"
