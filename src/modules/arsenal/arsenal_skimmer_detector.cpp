@@ -2,7 +2,9 @@
 #include <Arduino.h>
 #include <NimBLEDevice.h>
 #include <WiFi.h>
+#include <esp_task_wdt.h>
 #include <globals.h>
+#include "arsenal.h"
 #include "core/display.h"
 #include "core/mykeyboard.h"
 

@@ -5,6 +5,7 @@
 #include <esp_wifi.h>
 #include <esp_task_wdt.h>
 #include <globals.h>
+#include "arsenal.h"
 #include "core/display.h"
 #include "core/mykeyboard.h"
 
