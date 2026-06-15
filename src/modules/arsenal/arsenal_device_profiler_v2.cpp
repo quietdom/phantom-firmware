@@ -3,6 +3,7 @@
 #include <WiFi.h>
 #include <NimBLEDevice.h>
 #include <esp_wifi.h>
+#include <esp_task_wdt.h>
 #include <globals.h>
 #include "core/display.h"
 #include "core/mykeyboard.h"
@@ -12,7 +13,7 @@ struct ProfiledDevice {
     String address;
     String type;
     int rssi;
-    int威胁级别;
+    int threatLevel;
     unsigned long firstSeen;
 };
 
@@ -79,7 +80,7 @@ class ProfilerCallbacks : public NimBLEScanCallbacks {
             devices[deviceCount].address = addr;
             devices[deviceCount].type = classifyDevice(dev);
             devices[deviceCount].rssi = dev->getRSSI();
-            devices[deviceCount].威胁级别 = assessThreat(dev);
+            devices[deviceCount].threatLevel = assessThreat(dev);
             devices[deviceCount].firstSeen = millis();
             deviceCount++;
         }
@@ -121,12 +122,12 @@ void arsenal_device_profiler(void) {
 
         int maxShow = min(deviceCount, 8);
         for (int i = 0; i < maxShow; i++) {
-            uint16_t color = devices[i].威胁级别 > 3 ? TFT_RED :
-                             devices[i].威胁级别 > 0 ? TFT_YELLOW : TFT_GREEN;
+            uint16_t color = devices[i].threatLevel > 3 ? TFT_RED :
+                             devices[i].threatLevel > 0 ? TFT_YELLOW : TFT_GREEN;
             tft.setTextColor(color, TFT_BLACK);
             tft.setCursor(padX, y);
             String line = devices[i].type.substring(0, 6) + " " + String(devices[i].rssi) + "dB";
-            if (devices[i].威胁级别 > 0) line += " !" + String(devices[i].威胁级别);
+            if (devices[i].threatLevel > 0) line += " !" + String(devices[i].threatLevel);
             tft.print(line.substring(0, 28));
             y += 11;
         }

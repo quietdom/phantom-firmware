@@ -13,8 +13,9 @@ static volatile bool c2GotCmd = false;
 static char c2LastCmd[128] = "";
 static int c2CommandsSent = 0;
 
-static void c2OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {}
-static void c2OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
+static void c2OnDataSent(const wifi_tx_info_t *info, esp_now_send_status_t status) {}
+static void c2OnDataRecv(const esp_now_recv_info *info, const uint8_t *incomingData, int len) {
+    const uint8_t *mac = info->src_addr;
     if (len > 0 && len < 128) {
         memcpy(c2LastCmd, incomingData, len);
         c2LastCmd[len] = '\0';
