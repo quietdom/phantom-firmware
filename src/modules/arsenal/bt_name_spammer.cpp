@@ -34,7 +34,7 @@ static const char *SPAM_NAMES[] = {
     "Batcave Network",
     "Decepticon Relay",
     "HYDRA Base Alpha",
-    "Bruce Was Here",
+    "Phantom Was Here",
     "ur wifi is mine lol",
     "Hack In Progress...",
     "GET OUT OF MY SWAMP",

@@ -21,7 +21,7 @@
 #include <globals.h>
 #include <nvs_flash.h>
 
-#define WIFI_ATK_NAME "BruceAttack"
+#define WIFI_ATK_NAME "PhantomAttack"
 extern bool showHiddenNetworks;
 
 // Broadcast MAC for flood attacks
@@ -515,7 +515,7 @@ void capture_handshake(String tssid, String mac, uint8_t channel) {
     char hsFileName[128];
     sprintf(
         hsFileName,
-        "/BrucePCAP/handshakes/HS_%02X%02X%02X%02X%02X%02X_%s.pcap",
+        "/PhantomPCAP/handshakes/HS_%02X%02X%02X%02X%02X%02X_%s.pcap",
         bssid_array[0],
         bssid_array[1],
         bssid_array[2],
@@ -530,17 +530,17 @@ void capture_handshake(String tssid, String mac, uint8_t channel) {
     if (setupSdCard()) {
         fs = &SD;
         isLittleFS = false;
-        if (!SD.exists("/BrucePCAP/handshakes")) {
-            SD.mkdir("/BrucePCAP");
-            SD.mkdir("/BrucePCAP/handshakes");
+        if (!SD.exists("/PhantomPCAP/handshakes")) {
+            SD.mkdir("/PhantomPCAP");
+            SD.mkdir("/PhantomPCAP/handshakes");
         }
         hsExists = SD.exists(hsFileName);
     } else {
         fs = &LittleFS;
         isLittleFS = true;
-        if (!LittleFS.exists("/BrucePCAP/handshakes")) {
-            LittleFS.mkdir("/BrucePCAP");
-            LittleFS.mkdir("/BrucePCAP/handshakes");
+        if (!LittleFS.exists("/PhantomPCAP/handshakes")) {
+            LittleFS.mkdir("/PhantomPCAP");
+            LittleFS.mkdir("/PhantomPCAP/handshakes");
         }
         hsExists = LittleFS.exists(hsFileName);
     }
@@ -1023,7 +1023,7 @@ void beaconAttack() {
 #if !defined(LITE_VERSION)
     // Get user input for single SSID mode
     if (BeaconMode == 4) {
-        singleSSID = keyboard("BruceBeacon", 26, "Base SSID:");
+        singleSSID = keyboard("PhantomBeacon", 26, "Base SSID:");
         if (singleSSID.length() == 0 || singleSSID == "\x1B") { return; }
     }
 #endif

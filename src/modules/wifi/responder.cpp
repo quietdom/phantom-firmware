@@ -568,13 +568,13 @@ void responder() {
     tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
     if (!wifiConnected) wifiConnectMenu();
 
-    netbiosname_str = keyboard("Bruce", 20);
+    netbiosname_str = keyboard("Phantom", 20);
     if (netbiosname_str == "\x1B") return;
     netbiosName = stringTochar(netbiosname_str);
     netbiosdomain_str = keyboard("BRUCEGROUP", 20);
     if (netbiosdomain_str == "\x1B") return;
     netbiosDomain = stringTochar(netbiosdomain_str);
-    dnsdomain_str = keyboard("Bruce.Local", 20);
+    dnsdomain_str = keyboard("Phantom.Local", 20);
     if (dnsdomain_str == "\x1B") return;
     dnsDomain = stringTochar(dnsdomain_str);
 

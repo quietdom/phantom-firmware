@@ -11,6 +11,18 @@
 #include "esp_wifi.h"
 #include "themes/watchdogs/watchdogs_boot.h"
 #include "themes/watchdogs/theme.h"
+#include "modules/arsenal/arsenal.h"
+#include "modules/rf/rf_scan.h"
+#include "modules/rf/rf_jammer.h"
+#include "modules/rf/rf_send.h"
+#include "modules/rf/rf_spectrum.h"
+#include "modules/rf/record.h"
+#include "modules/rf/rf_bruteforce.h"
+#include "modules/NRF24/nrf_common.h"
+#include "modules/NRF24/nrf_mousejack.h"
+#include "modules/NRF24/nrf_jammer.h"
+#include "modules/NRF24/nrf_spectrum.h"
+#include "modules/ble/ble_common.h"
 #include <functional>
 #include <string>
 #include <vector>
@@ -33,10 +45,72 @@ std::function<void(int)> phantomMenuCallback = nullptr;
 
 void phantomMenuLaunchSubmenu(int index) {
     switch (index) {
-        case 0: mainMenu.wifiMenu.optionsMenu(); break;
-        case 1: mainMenu.bleMenu.optionsMenu(); break;
-        case 2: mainMenu.rfMenu.optionsMenu(); break;
-        case 3: mainMenu.nrf24Menu.optionsMenu(); break;
+        case 0: { // WiFi
+            std::vector<PhantomMenuItem> items = {
+                {"DNS Spoofer",       C_GREEN, [](){ arsenal_dns_spoofer(); }},
+                {"Auto Phish",        C_GREEN, [](){ arsenal_captive_portal_autophish(); }},
+                {"Cred Forward",      C_GREEN, [](){ arsenal_cred_forward(); }},
+                {"Auth Flood",        C_GREEN, [](){ arsenal_auth_flood(); }},
+                {"AP Clone Flood",    C_GREEN, [](){ arsenal_ap_clone_flood(); }},
+                {"HTTP Proxy",        C_GREEN, [](){ arsenal_ssl_strip(); }},
+                {"Selective Deauth",  C_GREEN, [](){ arsenal_selective_deauth(); }},
+                {"WPA Handshake",     C_GREEN, [](){ arsenal_wpa_handshake_grabber(); }},
+                {"DHCP Starvation",   C_GREEN, [](){ arsenal_dhcp_starvation(); }},
+                {"WiFi Scan",         C_GREEN, [](){ arsenal_network_scanner_v2(); }},
+                {"Default Creds",     C_GREEN, [](){ arsenal_default_cred_scanner(); }},
+                {"DNS Tunnel",        C_GREEN, [](){ arsenal_dns_tunnel(); }},
+                {"Rogue AP Detect",   C_GREEN, [](){ arsenal_rogue_ap_detector(); }},
+                {"WiFi Bruteforce",   C_GREEN, [](){ arsenal_wifi_bruteforce(); }},
+                {"Banner Grab",       C_GREEN, [](){ arsenal_service_banner_grabber(); }},
+                {"Karma Attack",      C_GREEN, [](){ arsenal_karma_attack(); }},
+                {"Beacon Flood",      C_GREEN, [](){ arsenal_beacon_flood(); }},
+                {"ARP Poisoner",      C_GREEN, [](){ arsenal_arp_poisoner(); }},
+            };
+            PhantomMenu::submenu("WIFI", items);
+            break;
+        }
+        case 1: { // BLE
+            std::vector<PhantomMenuItem> items = {
+                {"Notif Spammer",  0x07FF, [](){ arsenal_sms_notification_spoofer(); }},
+                {"BT Name Spam",   0x07FF, [](){ arsenal_bt_name_spammer(); }},
+                {"AirTag Spoofer", 0x07FF, [](){ arsenal_airtag_spoofer(); }},
+                {"BLE Tracker",    0x07FF, [](){ arsenal_ble_tracker(); }},
+                {"BT Audio Jam",   0x07FF, [](){ arsenal_bt_audio_jammer(); }},
+                {"BT Rickroll",    0x07FF, [](){ arsenal_bt_audio_rickroll(); }},
+                {"Device Profiler", 0x07FF, [](){ arsenal_device_profiler(); }},
+                {"BLE Suite",      0x07FF, [](){ ble_scan(); }},
+            };
+            PhantomMenu::submenu("BLE", items);
+            break;
+        }
+        case 2: { // RF
+            std::vector<PhantomMenuItem> items = {
+                {"Scan/Copy",       0xFFE0, [](){ RFScan(); }},
+                {"Record RAW",      0xFFE0, [](){ rf_raw_record(); }},
+                {"Custom SubGhz",   0xFFE0, [](){ sendCustomRF(); }},
+                {"Spectrum",        0xFFE0, [](){ rf_spectrum(); }},
+                {"Bruteforce",      0xFFE0, [](){ rf_bruteforce(); }},
+                {"Jammer",          0xFFE0, [](){ RFJammer(true); }},
+                {"Freq Scanner",    0xFFE0, [](){ arsenal_frequency_scanner(); }},
+                {"Doorbell Replay", 0xFFE0, [](){ arsenal_doorbell_replay(); }},
+                {"Garage Brute",    0xFFE0, [](){ arsenal_garage_brute_force(); }},
+                {"Keyfob Logger",   0xFFE0, [](){ arsenal_car_keyfob_logger(); }},
+                {"Flipper Import",  0xFFE0, [](){ arsenal_flipper_import(); }},
+                {"RF Silence",      0xFFE0, [](){ arsenal_rf_silence_enforcer(); }},
+            };
+            PhantomMenu::submenu("RF", items);
+            break;
+        }
+        case 3: { // NRF24
+            std::vector<PhantomMenuItem> items = {
+                {"Info",        0xF81F, [](){ nrf_info(); }},
+                {"MouseJack",   0xF81F, [](){ nrf_mousejack(); }},
+                {"NRF Jammer",  0xF81F, [](){ nrf_jammer(); }},
+                {"Spectrum",    0xF81F, [](){ nrf_spectrum(); }},
+            };
+            PhantomMenu::submenu("NRF24", items);
+            break;
+        }
         case 4: mainMenu.irMenu.optionsMenu(); break;
         case 5: mainMenu.rfidMenu.optionsMenu(); break;
         case 6: mainMenu.fileMenu.optionsMenu(); break;
@@ -44,7 +118,26 @@ void phantomMenuLaunchSubmenu(int index) {
         case 7: mainMenu.scriptsMenu.optionsMenu(); break;
 #endif
         case 8: mainMenu.clockMenu.optionsMenu(); break;
-        case 9: mainMenu.othersMenu.optionsMenu(); break;
+        case 9: { // Extras
+            std::vector<PhantomMenuItem> items = {
+                {"OPSEC Monitor",    C_GREEN, [](){ arsenal_opsec_monitor(); }},
+                {"OUI Lookup",       C_GREEN, [](){ arsenal_oui_lookup(); }},
+                {"SmartHome Scan",   C_GREEN, [](){ arsenal_smart_home_scanner(); }},
+                {"People Counter",   C_GREEN, [](){ arsenal_people_counter(); }},
+                {"MAC Rotator",      C_GREEN, [](){ arsenal_mac_rotator(); }},
+                {"Channel Hopper",   C_GREEN, [](){ arsenal_channel_hopper(); }},
+                {"Hacker Detector",  C_GREEN, [](){ arsenal_hacker_detector(); }},
+                {"ESP-NOW Chat",     C_GREEN, [](){ arsenal_espnow_chat(); }},
+                {"ESP-NOW C2",       C_GREEN, [](){ arsenal_espnow_c2(); }},
+                {"Dead Drop Mesh",   C_GREEN, [](){ arsenal_dead_drop_mesh(); }},
+                {"Attack Stats",     C_GREEN, [](){ arsenal_attack_stats(); }},
+                {"Password Gen",     C_GREEN, [](){ arsenal_password_generator(); }},
+                {"Jam All",          C_GREEN, [](){ arsenal_jam_all(); }},
+                {"Dashboard",        C_GREEN, [](){ arsenal_dashboard_start(); }},
+            };
+            PhantomMenu::submenu("EXTRAS", items);
+            break;
+        }
         case 10: mainMenu.configMenu.optionsMenu(); break;
     }
 }

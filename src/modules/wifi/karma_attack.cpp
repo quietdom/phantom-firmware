@@ -47,7 +47,7 @@ static bool ensureKarmaApInterface(uint8_t channel) {
             Serial.println("[KARMA] Failed to switch WiFi to AP mode");
             return false;
         }
-        if (!WiFi.softAP("BruceKarma", "", channel, 1, 4, false)) {
+        if (!WiFi.softAP("PhantomKarma", "", channel, 1, 4, false)) {
             Serial.println("[KARMA] Failed to start AP interface");
             return false;
         }
@@ -2224,7 +2224,7 @@ void saveHandshakeToFile(const HandshakeCapture &hs) {
     FS *fs = nullptr;
     if (!getFsStorage(fs)) return;
 
-    if (!fs->exists("/BrucePCAP/handshakes")) { fs->mkdir("/BrucePCAP/handshakes"); }
+    if (!fs->exists("/PhantomPCAP/handshakes")) { fs->mkdir("/PhantomPCAP/handshakes"); }
 
     char macStr[18];
     snprintf(
@@ -2239,7 +2239,7 @@ void saveHandshakeToFile(const HandshakeCapture &hs) {
         hs.bssid[5]
     );
 
-    String filename = "/BrucePCAP/handshakes/HS_" + String(macStr) + "_" + hs.ssid + ".pcap";
+    String filename = "/PhantomPCAP/handshakes/HS_" + String(macStr) + "_" + hs.ssid + ".pcap";
     filename.replace(" ", "_");
     filename.replace("*", "");
 
@@ -3224,8 +3224,8 @@ void karma_setup() {
                          {"Handshakes",
                  [&]() {
                               FS *fs;
-                              if (getFsStorage(fs) && fs->exists("/BrucePCAP/handshakes")) {
-                                  loopSD(*fs, false, "PCAP", "/BrucePCAP/handshakes");
+                              if (getFsStorage(fs) && fs->exists("/PhantomPCAP/handshakes")) {
+                                  loopSD(*fs, false, "PCAP", "/PhantomPCAP/handshakes");
                               } else {
                                   displayTextLine("No handshakes yet");
                                   delay(1000);

@@ -57,7 +57,7 @@ void brucegotchi_setup() {
     initPwngrid();
     initUi();
     state = STATE_INIT;
-    Serial.println("Brucegotchi Initialized");
+    Serial.println("Phantomgotchi Initialized");
 }
 
 void brucegotchi_update() {
@@ -131,12 +131,12 @@ void brucegotchi_start() {
     FS *handshakeFs = nullptr;
     if (setupSdCard()) {
         isLittleFS = false;
-        if (!SD.exists("/BrucePCAP")) SD.mkdir("/BrucePCAP");
-        if (!SD.exists("/BrucePCAP/handshakes")) SD.mkdir("/BrucePCAP/handshakes");
+        if (!SD.exists("/PhantomPCAP")) SD.mkdir("/PhantomPCAP");
+        if (!SD.exists("/PhantomPCAP/handshakes")) SD.mkdir("/PhantomPCAP/handshakes");
         handshakeFs = &SD;
     } else {
-        if (!LittleFS.exists("/BrucePCAP")) LittleFS.mkdir("/BrucePCAP");
-        if (!LittleFS.exists("/BrucePCAP/handshakes")) LittleFS.mkdir("/BrucePCAP/handshakes");
+        if (!LittleFS.exists("/PhantomPCAP")) LittleFS.mkdir("/PhantomPCAP");
+        if (!LittleFS.exists("/PhantomPCAP/handshakes")) LittleFS.mkdir("/PhantomPCAP/handshakes");
         isLittleFS = true;
         handshakeFs = &LittleFS;
     }

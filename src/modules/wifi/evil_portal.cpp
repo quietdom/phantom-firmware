@@ -311,8 +311,8 @@ void EvilPortal::loop() {
                  [this, &shouldRedraw]() {
                      FS *fs;
                      if (getFsStorage(fs)) {
-                         if (fs->exists("/BruceEvilCreds")) {
-                             loopSD(*fs, false, "CSV", "/BruceEvilCreds");
+                         if (fs->exists("/PhantomEvilCreds")) {
+                             loopSD(*fs, false, "CSV", "/PhantomEvilCreds");
                          } else {
                              displayTextLine("No credentials yet");
                              vTaskDelay(1000);
@@ -778,14 +778,14 @@ void EvilPortal::saveToCSV(const String &csvLine, bool isAPname) {
         return;
     }
 
-    if (!fs->exists("/BruceEvilCreds")) fs->mkdir("/BruceEvilCreds");
+    if (!fs->exists("/PhantomEvilCreds")) fs->mkdir("/PhantomEvilCreds");
 
     File file;
 
     if (!isAPname) {
-        file = fs->open("/BruceEvilCreds/" + outputFile, FILE_APPEND);
+        file = fs->open("/PhantomEvilCreds/" + outputFile, FILE_APPEND);
     } else {
-        file = fs->open("/BruceEvilCreds/" + apName + "_creds.csv", FILE_APPEND);
+        file = fs->open("/PhantomEvilCreds/" + apName + "_creds.csv", FILE_APPEND);
     }
 
     if (!file) {

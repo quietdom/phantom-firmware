@@ -125,8 +125,8 @@ bool Amiibo::openDumpFile() {
         return false;
     }
 
-    if (!(*fs).exists("/BruceRFID")) (*fs).mkdir("/BruceRFID");
-    filepath = loopSD(*fs, true, "RFID|NFC", "/BruceRFID");
+    if (!(*fs).exists("/PhantomRFID")) (*fs).mkdir("/PhantomRFID");
+    filepath = loopSD(*fs, true, "RFID|NFC", "/PhantomRFID");
     file = fs->open(filepath, FILE_READ);
 
     if (!file) {

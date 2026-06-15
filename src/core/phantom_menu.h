@@ -19,17 +19,27 @@ public:
 
     void begin();
     static void bootSequence();
-    void idleScreen();
+
+    // Submenu system
+    static void submenu(const char *title, std::vector<PhantomMenuItem> &items);
 
 private:
-    void drawMenu();
-    void drawGrid(int selectedIdx);
+    void drawStatusBar();
+    void drawMenuList();
+    void drawMenuItem(int idx, bool selected, int y);
+
+    // Idle
+    void idleLoop();
+    void idleMatrixRain();
+    void idleFoxMask();
+    void idleCircuit();
+    void idleDataScroll();
 
     std::vector<PhantomMenuItem> _items;
-    int _selectedIndex;
-    int _scrollOffset;
+    int _sel;
+    int _scroll;
     unsigned long _lastActivity;
-    static const int IDLE_TIMEOUT_MS = 30000;
+    bool _idleEnabled;
 };
 
 #endif

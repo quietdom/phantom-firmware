@@ -151,10 +151,10 @@ void startSessionLog(ClientProtocol protocol) {
 
         if (!bruceConfig.TerminalLog || !sdcardMounted) return;
 
-        if (!SD.exists("/Bruce")) SD.mkdir("/Bruce");
-        if (!SD.exists("/Bruce/Terminal")) SD.mkdir("/Bruce/Terminal");
+        if (!SD.exists("/Phantom")) SD.mkdir("/Phantom");
+        if (!SD.exists("/Phantom/Terminal")) SD.mkdir("/Phantom/Terminal");
 
-        String basePath = "/Bruce/Terminal/" + String(getProtocolName(protocol)) + "-" +
+        String basePath = "/Phantom/Terminal/" + String(getProtocolName(protocol)) + "-" +
                           sanitizeSessionLogComponent(sessionHost);
         for (uint16_t index = 1; index < 10000; ++index) {
             String candidate = basePath + "_" + String(index) + ".log";
