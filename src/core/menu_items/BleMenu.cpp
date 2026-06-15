@@ -4,7 +4,6 @@
 #include "modules/badusb_ble/ducky_typer.h"
 #include "modules/ble/ble_common.h"
 #include "modules/ble/ble_ninebot.h"
-#include "modules/ble/ble_spam.h"
 #if !defined(LITE_VERSION)
 #include "modules/ble/BLE_Suite.h"
 #include "modules/ble/airtag_spoofer.h"
@@ -35,29 +34,23 @@ void BleMenu::optionsMenu() {
     options.push_back({"Media Cmds", [=]() { MediaCommands(hid_ble, true); }});
     options.push_back({"BLE Scan", ble_scan});
     options.push_back({"iBeacon", [=]() {
-                           ibeacon("Bruce", "e4c159a0-8c82-11e6-bdf4-0800200c9a66", 0x004C);
+                           ibeacon("Phantom", "e4c159a0-8c82-11e6-bdf4-0800200c9a66", 0x004C);
                        }});
     options.push_back({"Bad BLE", [=]() { ducky_setup(hid_ble, true); }});
     options.push_back({"BLE Keyboard", [=]() { ducky_keyboard(hid_ble, true); }});
 #endif
-    options.push_back({"BLE Spam", [=]() { spamMenu(); }});
 
-#if !defined(LITE_VERSION)
-    options.push_back({"BLE Suite", [=]() { BleSuiteMenu(); }});
-    options.push_back({"AirTag Spoofer", airtagSpoofer});
-    options.push_back({"Notif Spoofer", notifSpoofer});
-    options.push_back({"Ninebot", [=]() { BLENinebot(); }});
-#endif
-
-    options.push_back({"--- ARSENAL ---", [this]() {}});
+    // Arsenal features (working implementations)
 #if !LITE_VERSION
-    options.push_back({"Notif Spoofer",      arsenal_sms_notification_spoofer });
+    options.push_back({"Notif Spammer",      arsenal_sms_notification_spoofer });
     options.push_back({"BT Name Spammer",    arsenal_bt_name_spammer          });
     options.push_back({"AirTag Spoofer",     arsenal_airtag_spoofer           });
     options.push_back({"BLE Tracker",        arsenal_ble_tracker              });
     options.push_back({"BT Audio Jammer",    arsenal_bt_audio_jammer          });
     options.push_back({"BT Rickroll",        arsenal_bt_audio_rickroll        });
     options.push_back({"Device Profiler",    arsenal_bt_device_profiler       });
+    options.push_back({"BLE Suite",          [this]() { BleSuiteMenu(); }     });
+    options.push_back({"Ninebot",            [=]() { BLENinebot(); }          });
 #endif
 
     addOptionToMainMenu();
