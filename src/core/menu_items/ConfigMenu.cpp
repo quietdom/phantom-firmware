@@ -264,10 +264,7 @@ void ConfigMenu::devMenu() {
             {"I2C Finder",      [this]() { find_i2c_addresses(); }                      },
             {"CC1101 Pins",     [this]() { setSPIPinsMenu(bruceConfigPins.CC1101_bus); }},
             {"NRF24  Pins",     [this]() { setSPIPinsMenu(bruceConfigPins.NRF24_bus); } },
-#if !defined(LITE_VERSION)
-            {"LoRa Pins",       [this]() { setSPIPinsMenu(bruceConfigPins.LoRa_bus); }  },
-            {"W5500 Pins",      [this]() { setSPIPinsMenu(bruceConfigPins.W5500_bus); } },
-#endif
+
             {"SDCard Pins",     [this]() { setSPIPinsMenu(bruceConfigPins.SDCARD_bus); }},
             {"I2C Pins",        [this]() { setI2CPinsMenu(bruceConfigPins.i2c_bus); }   },
             {"UART Pins",       [this]() { setUARTPinsMenu(bruceConfigPins.uart_bus); } },

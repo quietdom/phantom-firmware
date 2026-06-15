@@ -44,7 +44,8 @@ bool setupSdCard() {
     task = true;
 #endif
 #ifdef USE_SD_MMC
-    if (!SD.begin("/sdcard", true)) {
+    tft.endWrite();
+        if (!SD.begin("/sdcard", true)) {
         sdcardMounted = false;
         result = false;
     }
