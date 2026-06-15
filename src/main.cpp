@@ -8,6 +8,8 @@
 #include "esp32-hal-psram.h"
 #include "esp_task_wdt.h"
 #include "esp_wifi.h"
+#include "themes/watchdogs/watchdogs_boot.h"
+#include "themes/watchdogs/theme.h"
 #include <functional>
 #include <string>
 #include <vector>
@@ -232,103 +234,54 @@ void boot_screen() {
     tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
     tft.setTextSize(FM);
     tft.drawPixel(0, 0, bruceConfig.bgColor);
-    tft.drawCentreString("Bruce", tftWidth / 2, 10, 1);
+    tft.drawCentreString("PHANTOM", tftWidth / 2, 10, 1);
     tft.setTextSize(FP);
-    tft.drawCentreString(BRUCE_VERSION, tftWidth / 2, 25, 1);
+    tft.drawCentreString(PHANTOM_VERSION, tftWidth / 2, 25, 1);
     tft.setTextSize(FM);
     tft.drawCentreString(
-        "PREDATORY FIRMWARE", tftWidth / 2, tftHeight + 2, 1
-    ); // will draw outside the screen on non touch devices
+        "DEDSEC NETWORK", tftWidth / 2, tftHeight + 2, 1
+    );
 }
 
 /*********************************************************************
  **  Function: boot_screen_anim
- **  Draw boot screen
+ **  Draw Watch Dogs animated boot screen
  *********************************************************************/
 void boot_screen_anim() {
-    boot_screen();
     int i = millis();
-    // checks for boot.jpg in SD and LittleFS for customization
-    int boot_img = 0;
     bool drawn = false;
-    if (sdcardMounted) {
-        if (SD.exists("/boot.jpg")) boot_img = 1;
-        else if (SD.exists("/boot.gif")) boot_img = 3;
-    }
-    if (boot_img == 0 && LittleFS.exists("/boot.jpg")) boot_img = 2;
-    else if (boot_img == 0 && LittleFS.exists("/boot.gif")) boot_img = 4;
-    if (bruceConfig.theme.boot_img) boot_img = 5; // override others
+    int boot_img = 0;
 
-    tft.drawPixel(0, 0, 0);       // Forces back communication with TFT, to avoid ghosting
-                                  // Start image loop
-    while (millis() < i + 7000) { // boot image lasts for 5 secs
-        if ((millis() - i > 2000) && !drawn) {
-            tft.fillRect(0, 45, tftWidth, tftHeight - 45, bruceConfig.bgColor);
-            if (boot_img > 0 && !drawn) {
-                tft.fillScreen(bruceConfig.bgColor);
-                if (boot_img == 5) {
-                    drawImg(
-                        *bruceConfig.themeFS(),
-                        bruceConfig.getThemeItemImg(bruceConfig.theme.paths.boot_img),
-                        0,
-                        0,
-                        true,
-                        3600
-                    );
-                    Serial.println("Image from SD theme");
-                } else if (boot_img == 1) {
-                    drawImg(SD, "/boot.jpg", 0, 0, true);
-                    Serial.println("Image from SD");
-                } else if (boot_img == 2) {
-                    drawImg(LittleFS, "/boot.jpg", 0, 0, true);
-                    Serial.println("Image from LittleFS");
-                } else if (boot_img == 3) {
-                    drawImg(SD, "/boot.gif", 0, 0, true, 3600);
-                    Serial.println("Image from SD");
-                } else if (boot_img == 4) {
-                    drawImg(LittleFS, "/boot.gif", 0, 0, true, 3600);
-                    Serial.println("Image from LittleFS");
-                }
-                tft.drawPixel(0, 0, 0); // Forces back communication with TFT, to avoid ghosting
+    // Check for boot.gif in theme, SD, or LittleFS
+    if (bruceConfig.theme.boot_img) boot_img = 5;
+    else if (sdcardMounted && SD.exists("/boot.gif")) boot_img = 3;
+    else if (LittleFS.exists("/boot.gif")) boot_img = 4;
+
+    tft.drawPixel(0, 0, 0);
+
+    while (millis() < i + 7000) {
+        if ((millis() - i > 1500) && !drawn) {
+            tft.fillScreen(TFT_BLACK);
+
+            if (boot_img == 5) {
+                drawImg(*bruceConfig.themeFS(), bruceConfig.getThemeItemImg(bruceConfig.theme.paths.boot_img), 0, 0, true, 3600);
+            } else if (boot_img == 3) {
+                drawImg(SD, "/boot.gif", 0, 0, true, 3600);
+            } else if (boot_img == 4) {
+                drawImg(LittleFS, "/boot.gif", 0, 0, true, 3600);
+            } else {
+                // Default Watch Dogs animated boot
+                WatchdogsBoot::run(tft, tftWidth, tftHeight);
             }
             drawn = true;
         }
-#if !defined(LITE_VERSION)
-        if (!boot_img && (millis() - i > 2200) && (millis() - i) < 2700)
-            tft.drawRect(2 * tftWidth / 3, tftHeight / 2, 2, 2, bruceConfig.priColor);
-        if (!boot_img && (millis() - i > 2700) && (millis() - i) < 2900)
-            tft.fillRect(0, 45, tftWidth, tftHeight - 45, bruceConfig.bgColor);
-        if (!boot_img && (millis() - i > 2900) && (millis() - i) < 3400)
-            tft.drawXBitmap(
-                2 * tftWidth / 3 - 30,
-                5 + tftHeight / 2,
-                bruce_small_bits,
-                bruce_small_width,
-                bruce_small_height,
-                bruceConfig.bgColor,
-                bruceConfig.priColor
-            );
-        if (!boot_img && (millis() - i > 3400) && (millis() - i) < 3600) tft.fillScreen(bruceConfig.bgColor);
-        if (!boot_img && (millis() - i > 3600))
-            tft.drawXBitmap(
-                (tftWidth - 238) / 2,
-                (tftHeight - 133) / 2,
-                bits,
-                bits_width,
-                bits_height,
-                bruceConfig.bgColor,
-                bruceConfig.priColor
-            );
-#endif
-        if (check(AnyKeyPress)) // If any key or M5 key is pressed, it'll jump the boot screen
-        {
+        if (check(AnyKeyPress)) {
             tft.fillScreen(bruceConfig.bgColor);
             delay(10);
             return;
         }
     }
 
-    // Clear splashscreen
     tft.fillScreen(bruceConfig.bgColor);
 }
 
@@ -541,13 +494,13 @@ void loop() {
     tft.setLogging();
     Serial.println(
         "\n"
-        "██████  ██████  ██    ██  ██████ ███████ \n"
-        "██   ██ ██   ██ ██    ██ ██      ██      \n"
-        "██████  ██████  ██    ██ ██      █████   \n"
-        "██   ██ ██   ██ ██    ██ ██      ██      \n"
-        "██████  ██   ██  ██████   ██████ ███████ \n"
-        "                                         \n"
-        "         PREDATORY FIRMWARE\n\n"
+        "██████  ██   ██ ██    ██  ██████  ██████  \n"
+        "██   ██ ██   ██ ██    ██ ██      ██    ██ \n"
+        "██████  ██████  ██    ██ ██      ██    ██ \n"
+        "██   ██ ██   ██  ██  ██  ██      ██    ██ \n"
+        "██   ██ ██   ██   ████    ██████  ██████  \n"
+        "                                           \n"
+        "         PHANTOM v1.0 - DEDSEC NETWORK\n\n"
         "Tips: Connect to the WebUI for better experience\n"
         "      Add your network by sending: wifi add ssid password\n\n"
         "At your command:"

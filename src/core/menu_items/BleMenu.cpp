@@ -10,6 +10,8 @@
 #include "modules/ble/airtag_spoofer.h"
 #include "modules/ble/notif_spoofer.h"
 #endif
+#include "modules/arsenal/arsenal.h"
+#include "modules/arsenal/arsenal_config.h"
 #include <globals.h>
 
 void BleMenu::optionsMenu() {
@@ -46,6 +48,18 @@ void BleMenu::optionsMenu() {
     options.push_back({"Notif Spoofer", notifSpoofer});
     options.push_back({"Ninebot", [=]() { BLENinebot(); }});
 #endif
+
+    options.push_back({"--- ARSENAL ---", [this]() {}});
+#if !LITE_VERSION
+    options.push_back({"Notif Spoofer",      arsenal_sms_notification_spoofer });
+    options.push_back({"BT Name Spammer",    arsenal_bt_name_spammer          });
+    options.push_back({"AirTag Spoofer",     arsenal_airtag_spoofer           });
+    options.push_back({"BLE Tracker",        arsenal_ble_tracker              });
+    options.push_back({"BT Audio Jammer",    arsenal_bt_audio_jammer          });
+    options.push_back({"BT Rickroll",        arsenal_bt_audio_rickroll        });
+    options.push_back({"Device Profiler",    arsenal_bt_device_profiler       });
+#endif
+
     addOptionToMainMenu();
 
     loopOptions(options, MENU_TYPE_SUBMENU, "Bluetooth", 0, false);

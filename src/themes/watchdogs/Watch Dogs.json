@@ -17,5 +17,7 @@
   "secColor": "8c71",
   "bgColor": "0000",
   "border": 1,
-  "label": 0
+  "label": 0,
+  "boot_img": "boot.gif",
+  "gifDuration": 100
 }
