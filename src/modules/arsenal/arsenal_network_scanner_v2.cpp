@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WiFiClient.h>
+#include <esp_task_wdt.h>
 #include <globals.h>
 #include "core/display.h"
 #include "core/mykeyboard.h"
