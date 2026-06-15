@@ -9,8 +9,6 @@
 #include "esp32-hal-psram.h"
 #include "esp_task_wdt.h"
 #include "esp_wifi.h"
-#include "themes/watchdogs/watchdogs_boot.h"
-#include "themes/watchdogs/theme.h"
 #include "modules/arsenal/arsenal.h"
 #include "modules/rf/rf_scan.h"
 #include "modules/rf/rf_jammer.h"
@@ -47,66 +45,66 @@ void phantomMenuLaunchSubmenu(int index) {
     switch (index) {
         case 0: { // WiFi
             std::vector<PhantomMenuItem> items = {
-                {"DNS Spoofer",       C_GREEN, [](){ arsenal_dns_spoofer(); }},
-                {"Auto Phish",        C_GREEN, [](){ arsenal_captive_portal_autophish(); }},
-                {"Cred Forward",      C_GREEN, [](){ arsenal_cred_forward(); }},
-                {"Auth Flood",        C_GREEN, [](){ arsenal_auth_flood(); }},
-                {"AP Clone Flood",    C_GREEN, [](){ arsenal_ap_clone_flood(); }},
-                {"HTTP Proxy",        C_GREEN, [](){ arsenal_ssl_strip(); }},
-                {"Selective Deauth",  C_GREEN, [](){ arsenal_selective_deauth(); }},
-                {"WPA Handshake",     C_GREEN, [](){ arsenal_wpa_handshake_grabber(); }},
-                {"DHCP Starvation",   C_GREEN, [](){ arsenal_dhcp_starvation(); }},
-                {"WiFi Scan",         C_GREEN, [](){ arsenal_network_scanner_v2(); }},
-                {"Default Creds",     C_GREEN, [](){ arsenal_default_cred_scanner(); }},
-                {"DNS Tunnel",        C_GREEN, [](){ arsenal_dns_tunnel(); }},
-                {"Rogue AP Detect",   C_GREEN, [](){ arsenal_rogue_ap_detector(); }},
-                {"WiFi Bruteforce",   C_GREEN, [](){ arsenal_wifi_bruteforce(); }},
-                {"Banner Grab",       C_GREEN, [](){ arsenal_service_banner_grabber(); }},
-                {"Karma Attack",      C_GREEN, [](){ arsenal_karma_attack(); }},
-                {"Beacon Flood",      C_GREEN, [](){ arsenal_beacon_flood(); }},
-                {"ARP Poisoner",      C_GREEN, [](){ arsenal_arp_poisoner(); }},
+                {"DNS Spoofer",       [](){ arsenal_dns_spoofer(); }},
+                {"Auto Phish",        [](){ arsenal_captive_portal_autophish(); }},
+                {"Cred Forward",      [](){ arsenal_cred_forward(); }},
+                {"Auth Flood",        [](){ arsenal_auth_flood(); }},
+                {"AP Clone Flood",    [](){ arsenal_ap_clone_flood(); }},
+                {"HTTP Proxy",        [](){ arsenal_ssl_strip(); }},
+                {"Selective Deauth",  [](){ arsenal_selective_deauth(); }},
+                {"WPA Handshake",     [](){ arsenal_wpa_handshake_grabber(); }},
+                {"DHCP Starvation",   [](){ arsenal_dhcp_starvation(); }},
+                {"WiFi Scan",         [](){ arsenal_network_scanner_v2(); }},
+                {"Default Creds",     [](){ arsenal_default_cred_scanner(); }},
+                {"DNS Tunnel",        [](){ arsenal_dns_tunnel(); }},
+                {"Rogue AP Detect",   [](){ arsenal_rogue_ap_detector(); }},
+                {"WiFi Bruteforce",   [](){ arsenal_wifi_bruteforce(); }},
+                {"Banner Grab",       [](){ arsenal_service_banner_grabber(); }},
+                {"Karma Attack",      [](){ arsenal_karma_attack(); }},
+                {"Beacon Flood",      [](){ arsenal_beacon_flood(); }},
+                {"ARP Poisoner",      [](){ arsenal_arp_poisoner(); }},
             };
             PhantomMenu::submenu("WIFI", items);
             break;
         }
         case 1: { // BLE
             std::vector<PhantomMenuItem> items = {
-                {"Notif Spammer",  0x07FF, [](){ arsenal_sms_notification_spoofer(); }},
-                {"BT Name Spam",   0x07FF, [](){ arsenal_bt_name_spammer(); }},
-                {"AirTag Spoofer", 0x07FF, [](){ arsenal_airtag_spoofer(); }},
-                {"BLE Tracker",    0x07FF, [](){ arsenal_ble_tracker(); }},
-                {"BT Audio Jam",   0x07FF, [](){ arsenal_bt_audio_jammer(); }},
-                {"BT Rickroll",    0x07FF, [](){ arsenal_bt_audio_rickroll(); }},
-                {"Device Profiler", 0x07FF, [](){ arsenal_device_profiler(); }},
-                {"BLE Suite",      0x07FF, [](){ ble_scan(); }},
+                {"Notif Spammer",  [](){ arsenal_sms_notification_spoofer(); }},
+                {"BT Name Spam",   [](){ arsenal_bt_name_spammer(); }},
+                {"AirTag Spoofer", [](){ arsenal_airtag_spoofer(); }},
+                {"BLE Tracker",    [](){ arsenal_ble_tracker(); }},
+                {"BT Audio Jam",   [](){ arsenal_bt_audio_jammer(); }},
+                {"BT Rickroll",    [](){ arsenal_bt_audio_rickroll(); }},
+                {"Device Profiler", [](){ arsenal_device_profiler(); }},
+                {"BLE Suite",      [](){ ble_scan(); }},
             };
             PhantomMenu::submenu("BLE", items);
             break;
         }
         case 2: { // RF
             std::vector<PhantomMenuItem> items = {
-                {"Scan/Copy",       0xFFE0, [](){ RFScan(); }},
-                {"Record RAW",      0xFFE0, [](){ rf_raw_record(); }},
-                {"Custom SubGhz",   0xFFE0, [](){ sendCustomRF(); }},
-                {"Spectrum",        0xFFE0, [](){ rf_spectrum(); }},
-                {"Bruteforce",      0xFFE0, [](){ rf_bruteforce(); }},
-                {"Jammer",          0xFFE0, [](){ RFJammer(true); }},
-                {"Freq Scanner",    0xFFE0, [](){ arsenal_frequency_scanner(); }},
-                {"Doorbell Replay", 0xFFE0, [](){ arsenal_doorbell_replay(); }},
-                {"Garage Brute",    0xFFE0, [](){ arsenal_garage_brute_force(); }},
-                {"Keyfob Logger",   0xFFE0, [](){ arsenal_car_keyfob_logger(); }},
-                {"Flipper Import",  0xFFE0, [](){ arsenal_flipper_import(); }},
-                {"RF Silence",      0xFFE0, [](){ arsenal_rf_silence_enforcer(); }},
+                {"Scan/Copy",       [](){ RFScan(); }},
+                {"Record RAW",      [](){ rf_raw_record(); }},
+                {"Custom SubGhz",   [](){ sendCustomRF(); }},
+                {"Spectrum",        [](){ rf_spectrum(); }},
+                {"Bruteforce",      [](){ rf_bruteforce(); }},
+                {"Jammer",          [](){ RFJammer(true); }},
+                {"Freq Scanner",    [](){ arsenal_frequency_scanner(); }},
+                {"Doorbell Replay", [](){ arsenal_doorbell_replay(); }},
+                {"Garage Brute",    [](){ arsenal_garage_brute_force(); }},
+                {"Keyfob Logger",   [](){ arsenal_car_keyfob_logger(); }},
+                {"Flipper Import",  [](){ arsenal_flipper_import(); }},
+                {"RF Silence",      [](){ arsenal_rf_silence_enforcer(); }},
             };
             PhantomMenu::submenu("RF", items);
             break;
         }
         case 3: { // NRF24
             std::vector<PhantomMenuItem> items = {
-                {"Info",        0xF81F, [](){ nrf_info(); }},
-                {"MouseJack",   0xF81F, [](){ nrf_mousejack(); }},
-                {"NRF Jammer",  0xF81F, [](){ nrf_jammer(); }},
-                {"Spectrum",    0xF81F, [](){ nrf_spectrum(); }},
+                {"Info",        [](){ nrf_info(); }},
+                {"MouseJack",   [](){ nrf_mousejack(); }},
+                {"NRF Jammer",  [](){ nrf_jammer(); }},
+                {"Spectrum",    [](){ nrf_spectrum(); }},
             };
             PhantomMenu::submenu("NRF24", items);
             break;
@@ -120,20 +118,20 @@ void phantomMenuLaunchSubmenu(int index) {
         case 8: mainMenu.clockMenu.optionsMenu(); break;
         case 9: { // Extras
             std::vector<PhantomMenuItem> items = {
-                {"OPSEC Monitor",    C_GREEN, [](){ arsenal_opsec_monitor(); }},
-                {"OUI Lookup",       C_GREEN, [](){ arsenal_oui_lookup(); }},
-                {"SmartHome Scan",   C_GREEN, [](){ arsenal_smart_home_scanner(); }},
-                {"People Counter",   C_GREEN, [](){ arsenal_people_counter(); }},
-                {"MAC Rotator",      C_GREEN, [](){ arsenal_mac_rotator(); }},
-                {"Channel Hopper",   C_GREEN, [](){ arsenal_channel_hopper(); }},
-                {"Hacker Detector",  C_GREEN, [](){ arsenal_hacker_detector(); }},
-                {"ESP-NOW Chat",     C_GREEN, [](){ arsenal_espnow_chat(); }},
-                {"ESP-NOW C2",       C_GREEN, [](){ arsenal_espnow_c2(); }},
-                {"Dead Drop Mesh",   C_GREEN, [](){ arsenal_dead_drop_mesh(); }},
-                {"Attack Stats",     C_GREEN, [](){ arsenal_attack_stats(); }},
-                {"Password Gen",     C_GREEN, [](){ arsenal_password_generator(); }},
-                {"Jam All",          C_GREEN, [](){ arsenal_jam_all(); }},
-                {"Dashboard",        C_GREEN, [](){ arsenal_dashboard_start(); }},
+                {"OPSEC Monitor",    [](){ arsenal_opsec_monitor(); }},
+                {"OUI Lookup",       [](){ arsenal_oui_lookup(); }},
+                {"SmartHome Scan",   [](){ arsenal_smart_home_scanner(); }},
+                {"People Counter",   [](){ arsenal_people_counter(); }},
+                {"MAC Rotator",      [](){ arsenal_mac_rotator(); }},
+                {"Channel Hopper",   [](){ arsenal_channel_hopper(); }},
+                {"Hacker Detector",  [](){ arsenal_hacker_detector(); }},
+                {"ESP-NOW Chat",     [](){ arsenal_espnow_chat(); }},
+                {"ESP-NOW C2",       [](){ arsenal_espnow_c2(); }},
+                {"Dead Drop Mesh",   [](){ arsenal_dead_drop_mesh(); }},
+                {"Attack Stats",     [](){ arsenal_attack_stats(); }},
+                {"Password Gen",     [](){ arsenal_password_generator(); }},
+                {"Jam All",          [](){ arsenal_jam_all(); }},
+                {"Dashboard",        [](){ arsenal_dashboard_start(); }},
             };
             PhantomMenu::submenu("EXTRAS", items);
             break;
@@ -347,16 +345,12 @@ void begin_tft() {
  **  Draw boot screen
  *********************************************************************/
 void boot_screen() {
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);
     tft.setTextSize(FM);
-    tft.drawPixel(0, 0, bruceConfig.bgColor);
-    tft.drawCentreString("PHANTOM", tftWidth / 2, 10, 1);
+    tft.drawCentreString("PHANTOM", tftWidth / 2, tftHeight / 2 - 12, FM);
     tft.setTextSize(FP);
-    tft.drawCentreString("v1.0", tftWidth / 2, 25, 1);
-    tft.setTextSize(FM);
-    tft.drawCentreString(
-        "DEDSEC NETWORK", tftWidth / 2, tftHeight + 2, 1
-    );
+    tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
+    tft.drawCentreString("v1.0", tftWidth / 2, tftHeight / 2 + 6, FP);
 }
 
 /*********************************************************************
@@ -364,41 +358,7 @@ void boot_screen() {
  **  Draw Watch Dogs animated boot screen
  *********************************************************************/
 void boot_screen_anim() {
-    int i = millis();
-    bool drawn = false;
-    int boot_img = 0;
-
-    // Check for boot.gif in theme, SD, or LittleFS
-    if (bruceConfig.theme.boot_img) boot_img = 5;
-    else if (sdcardMounted && SD.exists("/boot.gif")) boot_img = 3;
-    else if (LittleFS.exists("/boot.gif")) boot_img = 4;
-
-    tft.drawPixel(0, 0, 0);
-
-    while (millis() < i + 7000) {
-        if ((millis() - i > 1500) && !drawn) {
-            tft.fillScreen(TFT_BLACK);
-
-            if (boot_img == 5) {
-                drawImg(*bruceConfig.themeFS(), bruceConfig.getThemeItemImg(bruceConfig.theme.paths.boot_img), 0, 0, true, 3600);
-            } else if (boot_img == 3) {
-                drawImg(SD, "/boot.gif", 0, 0, true, 3600);
-            } else if (boot_img == 4) {
-                drawImg(LittleFS, "/boot.gif", 0, 0, true, 3600);
-            } else {
-                // Default Watch Dogs animated boot
-                WatchdogsBoot::run();
-            }
-            drawn = true;
-        }
-        if (check(AnyKeyPress)) {
-            tft.fillScreen(bruceConfig.bgColor);
-            delay(10);
-            return;
-        }
-    }
-
-    tft.fillScreen(bruceConfig.bgColor);
+    PhantomMenu::bootSequence();
 }
 
 /*********************************************************************
@@ -603,31 +563,7 @@ void loop() {
     }
 #endif
     tft.fillScreen(bruceConfig.bgColor);
-
-    // Custom Phantom menu with idle screen
-    phantomMenu.begin();
-    delay(1);
-}
-#else
-
-void loop() {
-    tft.setLogging();
-    Serial.println(
-        "\n"
-        "██████  ██   ██ ██    ██  ██████  ██████  \n"
-        "██   ██ ██   ██ ██    ██ ██      ██    ██ \n"
-        "██████  ██████  ██    ██ ██      ██    ██ \n"
-        "██   ██ ██   ██  ██  ██  ██      ██    ██ \n"
-        "██   ██ ██   ██   ████    ██████  ██████  \n"
-        "                                           \n"
-        "         PHANTOM v1.0 - DEDSEC NETWORK\n\n"
-        "Tips: Connect to the WebUI for better experience\n"
-        "      Add your network by sending: wifi add ssid password\n\n"
-        "At your command:"
-    );
-
-    // Enable navigation through webUI
-    tft.fillScreen(bruceConfig.bgColor);
+    Serial.println("\nPHANTOM v1.0\n");
     mainMenu.begin();
     vTaskDelay(10 / portTICK_PERIOD_MS);
 }
