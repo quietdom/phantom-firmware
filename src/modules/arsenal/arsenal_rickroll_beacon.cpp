@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include <esp_wifi.h>
 #include <globals.h>
+#include "arsenal.h"
 #include "core/display.h"
 #include "core/mykeyboard.h"
 
