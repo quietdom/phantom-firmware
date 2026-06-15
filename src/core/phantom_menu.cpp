@@ -235,8 +235,9 @@ void PhantomMenu::begin() {
 }
 
 void PhantomMenu::idleLoop() {
+}
 
-static void PhantomMenu::submenu(const char *title, std::vector<PhantomMenuItem> &items) {
+void PhantomMenu::submenu(const char *title, std::vector<PhantomMenuItem> &items) {
     int sel = 0;
     int scroll = 0;
     int w = tftWidth;
